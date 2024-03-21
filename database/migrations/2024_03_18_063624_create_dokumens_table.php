@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('jenis_dokumen');
             $table->bigInteger('no_dokumen');
             $table->string('nama');
-            $table->string('file_dokumen');
+            $table->string('file_dokumen')->nullable();
             $table->timestamps();
         });
     }
