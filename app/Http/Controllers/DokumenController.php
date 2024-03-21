@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dokumen;
+use App\Models\dokumen;
 use App\Models\User;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
@@ -28,7 +28,7 @@ class DokumenController extends Controller
             'jenis_dokumen' => 'required|max:255',
             'no_dokumen' => 'required|max:255',
             'nama' => 'required|max:255',
-            'file_dokumen' => 'required|max:5000|mimes:pdf'
+            'file_dokumen' => 'required|max:5000|mimes:pdf,jpg,png,jpeg'
         ]);
 
         $dokumen = new Dokumen();
@@ -36,16 +36,17 @@ class DokumenController extends Controller
         // image upload
         if($request->hasFile('file_dokumen')) {
 
-        $allowedfileExtension=['pdf'];
-        $file = $request->file('file_dokumen');
-        $extenstion = $file->getClientOriginalExtension();
-        $check = in_array($extenstion, $allowedfileExtension);
+            $allowedfileExtension=['pdf','jpg','png','jpeg'];
+            $file = $request->file('file_dokumen');
+            $extenstion = $file->getClientOriginalExtension();
+            $check = in_array($extenstion, $allowedfileExtension);
 
-        if($check){
-            $nama = time() . $file->getClientOriginalName();
-            $file->move('images', $nama);
-            $dokumen->file_dokumen = $nama;
-        }
+            if($check){
+                $nama = time() . $file->getClientOriginalName();
+                // $file->move('images', $nama);
+                $file->storeAs('pdf', $nama, 'public');
+                $dokumen->file_dokumen = $nama;
+            }
         }
 
 
