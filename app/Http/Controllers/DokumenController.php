@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-require_once 'D:\MBKM BATCH 6 DISPENDUKCAPIL MALANG\testjwt\vendor\imagekit\imagekit\src\ImageKit\ImageKit.php';
-
-use Imagekit\Imagekit;
 use App\Models\Dokumen;
 use App\Models\User;
 use Firebase\JWT\JWT;
@@ -13,13 +10,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
-
-
 class DokumenController extends Controller
 {
-
     /**
-
      * Create a new controller instance.
      *
      * @return void
@@ -35,44 +28,26 @@ class DokumenController extends Controller
             'jenis_dokumen' => 'required|max:255',
             'no_dokumen' => 'required|max:255',
             'nama' => 'required|max:255',
-            'file_dokumen' => 'required|max:5000|mimes:jpg,png,jpeg'
+            'file_dokumen' => 'required|max:5000|mimes:pdf'
         ]);
 
         $dokumen = new Dokumen();
 
         // image upload
-        if ($request->hasFile('file_dokumen')) {
-            $file = $request->file('file_dokumen');
+        if($request->hasFile('file_dokumen')) {
 
-            $publicKey = "public_snWP+TjEVEFfh9Xah5yyd0CUbmw=";
-            $privateKey = "private_Yvrn1tktDyOieGLVW0WlWMNdpZk=";
-            $urlEndpoint = "https://ik.imagekit.io/binarthufail";
+        $allowedfileExtension=['pdf'];
+        $file = $request->file('file_dokumen');
+        $extenstion = $file->getClientOriginalExtension();
+        $check = in_array($extenstion, $allowedfileExtension);
 
-            // Inisialisasi koneksi dengan ImageKit.io
-            $imageKit = new ImageKit(
-                $publicKey,
-                $privateKey,
-                $urlEndpoint
-            );
-
-            // Konfigurasi untuk upload file
-            $uploadResponse = $imageKit->upload(
-                array(
-                    'file' => $file->getPathname(),
-                    'fileName' => time() . $file->getClientOriginalName(),
-                    //'tags' => ['dokumen'] // Tag opsional untuk mengelompokkan file
-                )
-            );
-
-            $success = false;
-            $success = !isset($uploadResponse->error);
-
-            if ($success) {
-                $dokumen->file_dokumen = $uploadResponse->result->url;
-            } else {
-                $error = $uploadResponse->error;
-            }
+        if($check){
+            $nama = time() . $file->getClientOriginalName();
+            $file->move('images', $nama);
+            $dokumen->file_dokumen = $nama;
         }
+        }
+
 
         $dokumen->jenis_dokumen = $request->input('jenis_dokumen');
         $dokumen->no_dokumen = $request->input('no_dokumen');
