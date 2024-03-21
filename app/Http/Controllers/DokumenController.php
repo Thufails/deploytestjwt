@@ -28,25 +28,25 @@ class DokumenController extends Controller
             'jenis_dokumen' => 'required|max:255',
             'no_dokumen' => 'required|max:255',
             'nama' => 'required|max:255',
-            'file_dokumen' => 'required|max:5000|mimes:pdf,jpg,png,jpeg'
+            // 'file_dokumen' => 'required|max:5000|mimes:pdf,jpg,png,jpeg'
         ]);
 
         $dokumen = new Dokumen();
 
         // image upload
-        if($request->hasFile('file_dokumen')) {
+        // if($request->hasFile('file_dokumen')) {
 
-        $allowedfileExtension=['pdf','jpg','png','jpeg'];
-        $file = $request->file('file_dokumen');
-        $extenstion = $file->getClientOriginalExtension();
-        $check = in_array($extenstion, $allowedfileExtension);
+        // $allowedfileExtension=['pdf','jpg','png','jpeg'];
+        // $file = $request->file('file_dokumen');
+        // $extenstion = $file->getClientOriginalExtension();
+        // $check = in_array($extenstion, $allowedfileExtension);
 
-        if($check){
-            $nama = time() . $file->getClientOriginalName();
-            $file->move('images', $nama);
-            $dokumen->file_dokumen = $nama;
-        }
-        }
+        // if($check){
+        //     $nama = time() . $file->getClientOriginalName();
+        //     $file->move('images', $nama);
+        //     $dokumen->file_dokumen = $nama;
+        // }
+        // }
 
 
         $dokumen->jenis_dokumen = $request->input('jenis_dokumen');
