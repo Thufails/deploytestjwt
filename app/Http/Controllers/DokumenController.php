@@ -88,6 +88,25 @@ class DokumenController extends Controller
         }
     }
 
+    public function showDokumenById($id)
+    {
+        $dokumen = Dokumen::find($id);
+
+        if (!$dokumen) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dokumen tidak ditemukan',
+                'data' => null
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Dokumen ditemukan',
+            'data' => $dokumen
+        ], 200);
+    }
+
     public function updateDokumen(Request $request, $id)
     {
         $this->validate($request, [

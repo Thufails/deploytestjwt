@@ -45,5 +45,6 @@ $router->group(['prefix' => 'surat', 'middleware' => 'auth'], function () use ($
 $router->group(['prefix' => 'dokumen'], function () use ($router) {
     $router->post('/uploadDokumen', 'DokumenController@uploadDokumen');
     $router->get('/showDokumen', 'DokumenController@showAllDokumen');
+    $router->get('/showDokumen/{id}', 'DokumenController@showDokumenById');
     $router->post('/updateDokumen/{id}', 'DokumenController@updateDokumen');
 });
