@@ -43,7 +43,6 @@ class DokumenController extends Controller
 
             if($check){
                 $nama = time() . $file->getClientOriginalName();
-                // $file->move('images', $nama);
                 $file->storeAs('pdf', $nama, 'public');
                 $dokumen->file_dokumen = $nama;
             }
@@ -77,13 +76,13 @@ class DokumenController extends Controller
         if ($dokumen->isEmpty()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Dokumen tidak ditemukan',
+                'message' => 'Dokumen tidak Ditemukan',
                 'data' => []
             ], 404);
         } else {
             return response()->json([
                 'success' => true,
-                'message' => 'Dokumen gagal di update',
+                'message' => 'Dokumen Ditemukan',
                 'data' => $dokumen
             ], 200);
         }
