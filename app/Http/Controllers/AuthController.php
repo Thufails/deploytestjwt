@@ -63,11 +63,21 @@ class AuthController extends Controller
         }
         $payload = [
             'iat' => intval(microtime(true)),
-            'exp' => intval(microtime(true)) + (60 * 60 * 1000),
+            'exp' => intval(microtime(true)) + (6 * 60 * 60),
             'uid' => $user->id
         ];
         // $algorithm = 'HS256'; (optional)
         $token = JWT::encode($payload, env('JWT_SECRET'), 'HS256');
+
+        if (!$token) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate token',
+            ], 500);
+        }
+        // Save token to database
+        $user->jwt_token = $token;
+        $user->save();
         if ($token) {
             return response()->json([
                 'success' => true,
