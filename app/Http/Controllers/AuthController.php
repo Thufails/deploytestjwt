@@ -63,7 +63,7 @@ class AuthController extends Controller
         }
         $payload = [
             'iat' => intval(microtime(true)),
-            'exp' => intval(microtime(true)) + (6 * 60 * 60),
+            'exp' => intval(microtime(true)) + (60 * 60 * 1000),
             'uid' => $user->id
         ];
         // $algorithm = 'HS256'; (optional)
