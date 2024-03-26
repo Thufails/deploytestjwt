@@ -38,7 +38,7 @@ class AuthServiceProvider extends ServiceProvider
                 return null;
             }
             $auth = explode(' ',$auth);
-            if($auth[0] != 'Bearer '){
+            if($auth[0] != 'Bearer'){
                 return null;
             }
             if($token = $auth[1]){
