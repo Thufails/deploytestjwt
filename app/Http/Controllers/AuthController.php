@@ -66,8 +66,14 @@ class AuthController extends Controller
         ], 401);
     }
 
-    // Set waktu kedaluwarsa token (misalnya, 1 jam)
-    $expirationTime = time() + (6 * 60 * 60); // 1 jam
+    // Set waktu kedaluwarsa token (misalnya, 6 jam)
+    $expirationTimeInSeconds = 6 * 60 * 60; // 6 jam dalam detik
+
+    // Hitung waktu kedaluwarsa dalam detik sejak epoch
+    $expirationTime = time() + $expirationTimeInSeconds;
+
+    // Konversi durasi waktu kedaluwarsa menjadi format jam
+    $expiresInHours = $expirationTimeInSeconds / 3600;
 
     // Buat payload JWT
     $payload = [
@@ -89,7 +95,7 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Successfully logged in',
             'access_token' => $token,
-            'expires_at' => $expirationTime
+            'token_expired' => 'Kadaluwarsa dalam '.$expiresInHours . ' jam',
         ], 200);
     } catch (\Exception $e) {
         // Tanggapan jika gagal menghasilkan token
