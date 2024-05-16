@@ -49,48 +49,55 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $validated = $this->validate($request, [
-            'email' => 'required|exists:users,email',
-            'password' => 'required'
-        ]);
+            // Validasi input
+    $validated = $this->validate($request, [
+        'email' => 'required|email|exists:users,email',
+        'password' => 'required'
+    ]);
 
-        $user = User::where('email', $validated['email'])->first();
-        if (!Hash::check($validated['password'], $user->password)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'email or password incorrect',
-            ], 401);
-        }
-        $payload = [
-            'iat' => intval(microtime(true)),
-            'exp' => intval(microtime(true)) + (60 * 60 * 1000),
-            'uid' => $user->id
-        ];
-        // $algorithm = 'HS256'; (optional)
+    // Ambil user berdasarkan email
+    $user = User::where('email', $validated['email'])->first();
+
+    // Periksa kecocokan password
+    if (!$user || !Hash::check($validated['password'], $user->password)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Email or password incorrect',
+        ], 401);
+    }
+
+    // Set waktu kedaluwarsa token (misalnya, 1 jam)
+    $expirationTime = time() + (60 * 60); // 1 jam
+
+    // Buat payload JWT
+    $payload = [
+        'iat' => time(),
+        'exp' => $expirationTime,
+        'uid' => $user->id
+    ];
+
+    try {
+        // Encode payload menjadi token JWT
         $token = JWT::encode($payload, env('JWT_SECRET'), 'HS256');
 
-        if (!$token) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to generate token',
-            ], 500);
-        }
-        // Save token to database
+        // Simpan token ke dalam user (opsional)
         $user->jwt_token = $token;
         $user->save();
-        if ($token) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Successfully Login',
-                'access_token' => $token
-            ], 201);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Login Failed',
-                'data' => ''
-            ], 400);
-        }
+
+        // Tanggapan sukses
+        return response()->json([
+            'success' => true,
+            'message' => 'Successfully logged in',
+            'access_token' => $token,
+            'expires_at' => $expirationTime
+        ], 200);
+    } catch (\Exception $e) {
+        // Tanggapan jika gagal menghasilkan token
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to generate token',
+        ], 500);
+    }
     }
 
     public function showUser()
