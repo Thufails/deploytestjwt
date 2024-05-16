@@ -67,7 +67,7 @@ class AuthController extends Controller
     }
 
     // Set waktu kedaluwarsa token (misalnya, 1 jam)
-    $expirationTime = time() + (60 * 60); // 1 jam
+    $expirationTime = time() + (6 * 60 * 60); // 1 jam
 
     // Buat payload JWT
     $payload = [
